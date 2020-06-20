@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using OpenHardwareMonitor.Hardware;
 
 namespace IAddOneSecondForElder
@@ -13,7 +13,6 @@ namespace IAddOneSecondForElder
     {
         private static int _currentIndex = 0;
         private const int BeepCoolDownMillisecond = 59 * 1000;
-        private const string ExeName = "+1s.exe";
         private static readonly Computer Computer = new Computer
         {
             CPUEnabled = true,
@@ -21,8 +20,20 @@ namespace IAddOneSecondForElder
         public Form1()
         {
             InitializeComponent();
-            SetStartup();
+            AppShortcutToStartUp();
             Computer.Open();
+        }
+        private void AppShortcutToStartUp()
+        {
+            using (var writer = new StreamWriter($"{Environment.GetFolderPath(Environment.SpecialFolder.Startup)}\\+1s.url"))
+            {
+                var app = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                writer.WriteLine("[InternetShortcut]");
+                writer.WriteLine($"URL=file:///{app}");
+                writer.WriteLine("IconIndex=0");
+                var icon = app.Replace('\\', '/');
+                writer.WriteLine($"IconFile={icon}");
+            }
         }
 
         public void ShowTemperatureInfo(TemperatureInfo temperatureInfo)
@@ -85,14 +96,6 @@ namespace IAddOneSecondForElder
         {
             BeepCaller();
             ShowTemperatureInfo(GetCpuTemperature());
-        }
-
-        private void SetStartup()
-        {
-            var registryKey = Registry.CurrentUser.OpenSubKey
-                ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            registryKey?.SetValue(ExeName, Application.ExecutablePath);
-
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
