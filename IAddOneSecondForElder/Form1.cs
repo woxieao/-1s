@@ -13,7 +13,9 @@ namespace IAddOneSecondForElder
     public partial class Form1 : Form
     {
         private static int _currentIndex = 0;
-        private const int BeepCoolDownMillisecond = 59 * 1000;
+        private const int Duration = 500;
+        private static readonly Config Config = new Config();
+
         private static readonly Computer Computer = new Computer
         {
             CPUEnabled = true,
@@ -78,12 +80,17 @@ namespace IAddOneSecondForElder
                 }
             }
         }
+
+        private void Beep()
+        {
+            Console.Beep(Config.Frequency, Duration);
+        }
         private void BeepCaller()
         {
             _currentIndex += timer1.Interval;
-            if (_currentIndex >= BeepCoolDownMillisecond)
+            if (_currentIndex >= Config.Interval)
             {
-                Console.Beep(50, 500);
+                Beep();
                 _currentIndex = 0;
             }
         }
@@ -120,6 +127,7 @@ namespace IAddOneSecondForElder
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Beep();
             MessageBox.Show("Hello There", ":)");
             return;
             for (int i = 0; i < 10000; i++)
@@ -127,6 +135,17 @@ namespace IAddOneSecondForElder
                 ShowTemperatureInfo(new TemperatureInfo(new List<double>() { i % 100 }));
                 button1.Text = i.ToString();
             }
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Config.LoadConfig();
+            Beep();
+        }
+
+        private void editConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start(Config.ConfigPath);
         }
     }
 }
