@@ -6,3 +6,4 @@ If you like this tool,please click Star,thx!
 
 如果你喜欢这个工具,请点一下Star,感谢!
 
+根据使用者反馈,40Hz体验感最好,各位可以参照此频率设置音量
