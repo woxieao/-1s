@@ -1,9 +1,9 @@
-﻿using System;
+﻿using IAddOneSecondForElder.Models;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using IAddOneSecondForElder.Models;
 
 namespace IAddOneSecondForElder
 {
@@ -28,7 +28,7 @@ namespace IAddOneSecondForElder
         private void BeepCaller()
         {
             _currentIndex += timer1.Interval;
-            if (_currentIndex >= 1000 * 60)
+            if (_currentIndex >= 1000 * Config.Instance.IntervalSeconds)
             {
                 _currentIndex = 0;
                 Core.Beep();
@@ -80,35 +80,43 @@ namespace IAddOneSecondForElder
             Core.Beep();
             MessageBox.Show("Hello There", ":)");
             return;
-            for (var i = 0; i < 10000; i++)
-            {
-                // ShowTemperatureInfo(new TemperatureInfo(new List<double>() { i % 100 }));
-                button1.Text = i.ToString();
-            }
         }
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void autoToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            Config.Instance.LoadConfig();
-            Core.Beep();
-        }
 
-        private void autoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
             Config.Instance.ColorTheme = ColorTheme.Auto;
             Config.Instance.WriteConfig(Config.Instance);
         }
 
-        private void lightToolStripMenuItem_Click(object sender, EventArgs e)
+        private void darkToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
+
+            Config.Instance.ColorTheme = ColorTheme.Dark;
+            Config.Instance.WriteConfig(Config.Instance);
+        }
+
+        private void lightToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+
             Config.Instance.ColorTheme = ColorTheme.Light;
             Config.Instance.WriteConfig(Config.Instance);
         }
 
-        private void darkToolStripMenuItem_Click(object sender, EventArgs e)
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
         {
-            Config.Instance.ColorTheme = ColorTheme.Dark;
+            int.TryParse(toolStripTextBox1.Text, out var intervalSeconds);
+            Config.Instance.IntervalSeconds = intervalSeconds;
             Config.Instance.WriteConfig(Config.Instance);
+        }
+
+        private void contextMenuStrip1_Opened(object sender, EventArgs e)
+        {
+            if (toolStripTextBox1.TextBox != null)
+            {
+                toolStripTextBox1.TextBox.Text = Config.Instance.IntervalSeconds.ToString();
+            }
+
         }
     }
 }

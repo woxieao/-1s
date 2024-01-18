@@ -1,10 +1,10 @@
 ﻿using IAddOneSecondForElder.Models;
-using OpenHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using LibreHardwareMonitor.Hardware;
 
 namespace IAddOneSecondForElder
 {
@@ -13,7 +13,7 @@ namespace IAddOneSecondForElder
 
         private static readonly Computer Computer = new Computer
         {
-            CPUEnabled = true,
+            IsCpuEnabled = true
         };
 
         static Core()
@@ -87,7 +87,7 @@ namespace IAddOneSecondForElder
         public static TemperatureInfo GetCpuTemperature()
         {
             var temperatureList = new List<double>();
-            foreach (var hardwareItem in Computer.Hardware.Where(i => i.HardwareType == HardwareType.CPU))
+            foreach (var hardwareItem in Computer.Hardware.Where(i => i.HardwareType == HardwareType.Cpu))
             {
                 hardwareItem.Update();
                 foreach (var sensor in hardwareItem.Sensors.Where(i => i.SensorType == SensorType.Temperature && i.Value.HasValue))
